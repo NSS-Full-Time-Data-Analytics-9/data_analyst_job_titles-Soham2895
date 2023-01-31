@@ -17,37 +17,34 @@ select * from public.data_analyst_jobs;
 --4 How many postings in Tennessee have a star rating above 4?
 SELECT COUNT(title)
 FROM data_analyst_jobs
-WHERE star_rating = 4;
+WHERE star_rating > 4;
 
 --5 How many postings in the dataset have a review count between 500 and 1000?
 SELECT COUNT(title)
 FROM data_analyst_jobs
 WHERE review_count BETWEEN 500 AND 1000;
 
---6.	Show the average star rating for companies in each state. The output should show the state as `state` and the average rating for the state as `avg_rating`. Which state shows the highest average rating?
-SELECT company, location AS state , AVG(star_rating) AS avg_rating
+--6 Show the average star rating for companies in each state. The output should show the state as `state` and the average rating for the state as `avg_rating`. Which state shows the highest average rating?
+SELECT  location AS state , AVG(star_rating) AS avg_rating
 FROM data_analyst_jobs 
 WHERE star_rating IS NOT NULL
-Group by company , location
+Group by  location
 order by avg(star_rating) DESC;
 
---7.	Select unique job titles from the data_analyst_jobs table. How many are there?
+--7.Select unique job titles from the data_analyst_jobs table. How many are there?
 SELECT DISTINCT ("title")
 FROM data_analyst_jobs;
 
-
---8.	How many unique job titles are there for California companies?
+--8.How many unique job titles are there for California companies?
 SELECT COUNT(DISTINCT title)
 FROM data_analyst_jobs
 WHERE location ='CA';
 
-
 --9.	Find the name of each company and its average star rating for all companies that have more than 5000 reviews across all locations. How many companies are there with more that 5000 reviews across all locations?
-SELECT COUNT (company),AVG(star_rating)
+SELECT company,AVG(star_rating),location
 FROM data_analyst_jobs
-WHERE review_count >5000;
-
-
+WHERE review_count >5000
+GROUP BY location,company
 
 --10.	Add the code to order the query in #9 from highest to lowest average star rating. Which company with more than 5000 reviews across all locations in the dataset has the highest star rating? What is that rating?
 SELECT company, AVG(star_rating)
@@ -77,11 +74,11 @@ WHERE title NOT ILIKE '%Analyst%' AND title NOT ILIKE '%Analytics%';
 --Order your results so that the domain with the greatest number of `hard to fill` jobs is at the top. 
 -- Which three industries are in the top 4 on this list? How many jobs have been listed for more than 3 weeks for each of the top 4?
 
-SELECT skill,domain, count(title), days_since_posting
+SELECT domain, COUNT (title) AS opening
 FROM public.data_analyst_jobs
-where skill = 'SQL' and domain is not null and days_since_posting < 21 
-group by skill, domain,days_since_posting
-order by days_since_posting  desc;
-
+WHERE skill ILIKE '%SQL%' AND domain IS NOT null AND days_since_posting > 21
+GROUP BY domain
+ORDER BY COUNT (title) DESC
+LIMIT 4;
 
 select *  FROM public.data_analyst_jobs
